@@ -36,6 +36,20 @@ app.get('/tasks', (req, res) => {
   }); 
 });
 
+app.delete('/tasks/:id', (req,res) =>{
+  const { id } = req.params;
+  
+  const query = 'DELETE FROM tasks WHERE id = ?';
+  connection.query(query,[id], (err, results) =>{
+    if(err){
+      console.error('Error deleting task:', err);
+      return res.status(500).send(err.message)
+    }
+    if(results.affectedRows === 0) return res.status(404).send('Task not found')
+    res.status(200).end()
+  })
+})
+
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
