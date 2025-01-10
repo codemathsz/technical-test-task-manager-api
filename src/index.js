@@ -50,6 +50,24 @@ app.delete('/tasks/:id', (req,res) =>{
   })
 })
 
+app.put('/tasks/:id', (req, res) => {
+  const { id } = req.params;
+  const { title, description, status } = req.body;
+  const query = 'UPDATE tasks SET title = ?, description = ?, status = ? WHERE id = ?';
+
+  connection.query(query, [title, description, status, id], (err, results) => {
+    if (err) {
+      console.error('Error updating task:', err);
+      return res.status(500).send('Internal server error');
+    }
+    if (results.affectedRows === 0) {
+      return res.status(404).send('Task not found');
+    }
+    res.status(204).send(`Tarefa [${id}] editada com sucesso`);
+  });
+});
+
+
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
